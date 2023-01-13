@@ -1,0 +1,29 @@
+﻿<div class="mt-4 container">
+    Manage States
+</div>
+<div class="mt-4 container">
+    <div class="col-12">
+        <form>
+            <label>*State's country:</label>
+            <select [(ngModel)]="countryId" class="form-control" [ngModelOptions]="{standalone: true}"  [required]="countryId != undefined"> 
+                <option disabled>Select state's country</option>
+                <option *ngFor="let country of countries" [ngValue]="country.countryId">{{country.countryName}}</option>
+            </select>
+            <label >*State Name:</label>
+            <input class="form-control col-5" type="text" [(ngModel)]="addStateName" [ngModelOptions]="{standalone: true}" [required]="addStateName != undefined && addStateName != ''">
+            <input value="Add State" class="btn btn-primary btn-md m-1 col-2" (click)="AddStates(addStateName)">
+        </form>
+    </div>
+</div>
+<div class="mt-1 container">
+    <div *ngFor="let state of states; let ind=index" class="alert alert-dismissible">
+        <span [innerHTML]="state.stateName" *ngIf="!udpateStatesInputShow[ind].show">{{udpateStatesInputShow}}</span>
+        <input class="form-control" type="text" [(ngModel)]="statesName" *ngIf="udpateStatesInputShow[ind].show">
+        <button class="btn btn-primary btn-md m-1" *ngIf="!udpateStatesInputShow[ind].show" (click)="udpateStatesEdit(state)">Edit</button>
+        <div *ngIf="udpateStatesInputShow[ind].show">
+            <button class="btn btn-primary btn-md m-1" (click)="updateStatesSaveEdit(state)">Save</button>
+            <button class="btn btn-primary btn-md m-1" (click)="cancelStatesEdit(state)">Cancel</button>
+        </div>
+        <button class="btn btn-danger btn-close" (click)="removeStates(state.stateId)"></button>
+    </div>
+</div>
