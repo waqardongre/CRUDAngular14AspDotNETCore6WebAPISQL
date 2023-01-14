@@ -19,10 +19,10 @@ export class CountryComponent implements OnInit, OnDestroy {
     getCountries() {
         this.countriesSubscription = this.countryService.getAll()
         .subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 this.countries = response;
             }, 
-            error: (err) => {
+            error: (err: any) => {
                 console.log(JSON.stringify(err));
             },
             complete: () => {
@@ -61,46 +61,45 @@ export class CountryComponent implements OnInit, OnDestroy {
     udpateCountryPut(id: string | undefined, country: any) {
         this.countriesSubscription = this.countryService.update(id, country)
         .subscribe({
-            next: response => {
+            next: (response: any) => {
                 let res = response;
                 this.toggleUdpateCountryInputShowByCountryId(country.countryId, false);
                 this.getCountries();
             },
-            error: err => {
+            error: (err: any) => {
                 console.log(err.error);
             }
         });
     }
     
     AddCountry(addCountryName: string | undefined) {
-        if (addCountryName != undefined && addCountryName != "") {
-            let country = { countryId: 0, countryName: addCountryName};
-            this.countriesSubscription = this.countryService.create(country)
-            .subscribe({
-                next: response => {
-                    let res = response;
-                    this.getCountries();
-                },
-                error: err => {
-                    console.log(err.error);
-                },
-                complete: () => {
-                    this.addCountryName = undefined;
-                }
-            });    
-        }
+        let country = { countryId: 0, countryName: addCountryName};
+        this.addCountryName = undefined;
+        this.countriesSubscription = this.countryService.create(country)
+        .subscribe({
+            next: (response: any) => {
+                let res = response;
+                this.getCountries();
+            },
+            error: (err: any) => {
+                console.log(err.error);
+            },
+            complete: () => {
+                this.addCountryName = undefined;
+            }
+        });
     }
 
     removeCountry(id: number) {
         this.countriesSubscription = this.countryService.delete(id)
         .subscribe({
-            next: response => {
+            next: (response: any) => {
                 let res = response;
                 this.getCountries();
             },
-            error: err => {
+            error: (err: any) => {
                 if (err.error == "countryid_foreignkey_for_some_state") {
-                    alert("This CountryId is a foreign key for some state");
+                    alert("This Country is added for some state, delete that state first.(countryid_foreignkey_for_some_state)");
                 }
                 console.log(err.error);
             }

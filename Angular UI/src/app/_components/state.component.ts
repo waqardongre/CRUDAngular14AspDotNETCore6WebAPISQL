@@ -2,6 +2,7 @@
 import { Subscription } from 'rxjs';
 
 import { CountryService, StateService } from '@app/_services';
+import { State } from '../_models/state';
 
 @Component({ selector: 'state', templateUrl: 'state.component.html' })
 export class StateComponent implements OnInit, OnDestroy {
@@ -24,16 +25,20 @@ export class StateComponent implements OnInit, OnDestroy {
         this.getCountries();
         this.statesSubscription = this.stateService.getAll()
         .subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 this.states = response;
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.log(JSON.stringify(err));
             },
             complete: () => {
                 if (this.states.length > 0) {
+                    let ind: number= 0;
                     this.states.forEach(element => {
-                        this.udpateStatesInputShow.push({stateId:element.stateId, show: false});    
+                        this.udpateStatesInputShow.push({stateId:element.stateId, show: false});
+                        let currentStatesCountryName: string | undefined = this.countries.filter(x => x.countryId == this.states[ind].countryId)[0].countryName;
+                        this.states[ind].country = { countryId: element.countryId, countryName: currentStatesCountryName}
+                        ind += 1;
                     });
                 }
             }
@@ -43,10 +48,10 @@ export class StateComponent implements OnInit, OnDestroy {
     getCountries() {
         this.countrySubscription = this.countryService.getAll()
         .subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 this.countries = response;
             }, 
-            error: (err) => {
+            error: (err: any) => {
                 console.log(JSON.stringify(err));
             },
             complete: () => {}
@@ -80,48 +85,45 @@ export class StateComponent implements OnInit, OnDestroy {
         let stateObj = { stateId: id, stateName: this.statesName, countryId: state.countryId};
         this.statesSubscription = this.stateService.update(id, stateObj)
         .subscribe({
-            next: response => {
+            next: (response: any) => {
                 let res = response;
                 this.toggleUdpateStatesInputShowByStatesId(state.stateId, false);
                 this.getStates();
             },
-            error: err => {
+            error: (err: any) => {
                 console.log(err.error);
             }
         });
     }
 
     AddStates(addStatesName: string | undefined) {
-        if (addStatesName != undefined && addStatesName != "" && this.countryId != undefined) {
-            let state = { stateId: 0, stateName: addStatesName, countryId: this.countryId};
-            this.statesSubscription = this.stateService.create(state)
-            .subscribe({
-                next: response => {
-                    let res = response;
-                    this.getStates();
-                },
-                error: err => {
-                    console.log(err.error);
-                },
-                complete: () => {
-                    this.addStateName = undefined;
-                    this.countryId = undefined;
-                }
-            });
-        }
+        let state = { stateId: 0, stateName: addStatesName, countryId: this.countryId};
+        addStatesName = undefined;
+        this.countryId = undefined;
+        this.statesSubscription = this.stateService.create(state)
+        .subscribe({
+            next: (response: any) => {
+                let res = response;
+                this.getStates();
+            },
+            error: (err: any) => {
+                console.log(err.error);
+            },
+            complete: () => {
+                this.addStateName = undefined;
+                this.countryId = undefined;
+            }
+        });
     }
 
     removeStates(id: number) {
         this.statesSubscription = this.stateService.delete(id)
         .subscribe({
-            next: response => {
+            next: (response: any) => {
                 let res = response;
                 this.getStates();
             },
-            error: err => {
-                if (err.error == "statesid_foreignkey_for_some_state") {
-                    alert("This StatesId is a foreign key for some state");
-                }
+            error: (err: any) => {
                 console.log(err.error);
             }
         });

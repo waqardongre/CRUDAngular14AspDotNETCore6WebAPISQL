@@ -1,17 +1,18 @@
 ﻿<div class="mt-4 container">
-    Manage Countries
+    <h5>Manage Countries</h5>
 </div>
 <div class="mt-4 container">
     <div class="col-12">
-        <form>
-            <label for="website">*Add country name:</label>
+        <form (submit)="AddCountry(addCountryName)">
+            <label>*Add country name:</label>
             <input class="form-control col-5" type="text" [(ngModel)]="addCountryName" [ngModelOptions]="{standalone: true}" [required]="addCountryName != undefined && addCountryName != ''">
+            <input value="Add Country" type="submit" [disabled]="addCountryName == undefined || addCountryName == ''" class="btn btn-primary btn-md m-1 col-4">
         </form>
-        <input value="Add Country" type="submit" class="btn btn-primary btn-md m-1 col-2" (click)="AddCountry(addCountryName)"/>
     </div>
 </div>
-<div class="mt-1 container">
-    <div *ngFor="let country of countries; let ind=index" class="alert alert-dismissible">
+<div class="mt-3 container">
+    <h5>Countries</h5>
+    <div *ngFor="let country of countries; let ind=index" class="alert alert-dismissible border">
         <span [innerHTML]="country.countryName" *ngIf="!udpateCountryInputShow[ind].show">{{udpateCountryInputShow}}</span>
         <input class="form-control" type="text" [(ngModel)]="countryName" *ngIf="udpateCountryInputShow[ind].show">
         <button class="btn btn-primary btn-md m-1" *ngIf="!udpateCountryInputShow[ind].show" (click)="udpateCountryEdit(country)">Edit</button>
@@ -19,6 +20,6 @@
             <button class="btn btn-primary btn-md m-1" (click)="updateCountrySaveEdit(country)">Save</button>
             <button class="btn btn-primary btn-md m-1" (click)="cancelCountryEdit(country)">Cancel</button>
         </div>
-        <button class="btn btn-danger btn-close" (click)="removeCountry(country.countryId)"></button>
+        <button class="btn btn-danger btn-close mt-2 me-2" (click)="removeCountry(country.countryId)"></button>
     </div>
 </div>

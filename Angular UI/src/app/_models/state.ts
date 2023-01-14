@@ -3,7 +3,7 @@ export class State {
     stateName: string ="";
     countryId: number = 0;
     country?: {
-        countryId?: 0,
+        countryId?: number,
         countryName?: string
     }
 }
